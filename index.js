@@ -1,9 +1,21 @@
+//forward declarations
 const grid = document.querySelector('.grid')
 const blockWidth = 100
 const blockHeight = 20
+const gridWidth = 600
+
+//user position variables
+const userStartPosition = [230,10]
+const userCurrentPosition = userStartPosition
+
+//ball position variables
+const ballStartPosition= [270,40]
+let ballCurrentPosition = ballStartPosition
 
 
-//create block
+//===================================(blocks)================================
+
+//create block object
 class Block{
     constructor(xAxis, yAxis){
         this.bottomLeft= [xAxis,yAxis]
@@ -14,7 +26,7 @@ class Block{
 }
 
 
-//all the blocks
+//na array of all the blocks and their locations
 const blocks = [
     new Block(10,270),
     new Block(120,270),
@@ -33,7 +45,7 @@ const blocks = [
     new Block(450,210),
 ]
 
-//draw my block
+//draw my blocks to the screen
 function addBlocks(){
 
     for (let i=0; i<blocks.length;  i++){
@@ -47,3 +59,66 @@ function addBlocks(){
 
 
 addBlocks()
+
+
+
+
+//===================================(user)================================
+
+
+//add user to the screen
+const user = document.createElement('div')
+user.classList.add('user')
+updateUserPosition()
+grid.appendChild(user)
+
+
+//update user position on the screen
+function updateUserPosition(){
+    user.style.left = userCurrentPosition[0] + 'px'
+    user.style.bottom = userCurrentPosition[1] + 'px'
+}
+
+
+//move user using keys
+function moveUser(e){
+    switch(e.key){
+
+        //if user hits left arrow move the user 10 pixels to the left
+        case 'ArrowLeft':
+            if(userCurrentPosition[0]>0){ // making sure user stays on the grid
+            userCurrentPosition[0] -=10
+            updateUserPosition()
+            }
+            break;
+
+          //if user hits right arrow move the user 10 pixels to the right
+        case 'ArrowRight':
+            if(userCurrentPosition[0]<gridWidth-blockWidth){ // making sure user stays on the grid
+            userCurrentPosition[0] +=10
+            updateUserPosition()
+            }
+            break;
+    }
+
+}
+
+//getting key inputs from user
+document.addEventListener('keydown',moveUser)
+
+
+
+//===================================(ball)================================
+
+//add ball
+const ball = document.createElement('div')
+ball.classList.add('ball')
+updateBallPosition()
+grid.appendChild(ball)
+
+
+//draw ball with new position on the screen
+function updateBallPosition(){
+    ball.style.left = ballCurrentPosition[0] +'px'
+    ball.style.bottom = ballCurrentPosition[1] +'px'
+}
