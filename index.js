@@ -173,7 +173,7 @@ function checkForWallCollision(){
             //check if user has won
 
             if(blocks.length===0){
-                scoreDisplay.innerHTML = "YOU WIN"
+                scoreDisplay.innerHTML = 'YOU WIN <br> Final Score: ' + score
                 clearInterval(timerId)
                 document.removeEventListener('keydown',moveUser)
             }
@@ -204,7 +204,7 @@ function checkForWallCollision(){
     //check if ball hit the floor for game over
     if(ballCurrentPosition[1]<=0){
         clearInterval(timerId)
-        scoreDisplay.innerHTML = 'YOU LOSE'
+        scoreDisplay.innerHTML = 'YOU LOSE <br> Final Score: ' + score
         document.removeEventListener('keydown',moveUser)
     }
 
