@@ -4,10 +4,12 @@ const blockWidth = 100
 const blockHeight = 20
 const gridWidth = 560
 const gridHeight = 300
+const scoreDisplay = document.querySelector('#score')
 let timerId
 const ballDiameter = 20
 let xDirection =2
 let yDirection =2
+let score =0
 
 //user position variables
 const userStartPosition = [230,10]
@@ -147,10 +149,63 @@ timerId = setInterval(moveBall,30)
 
 function checkForWallCollision(){
 
-    //check for wall collision
-    if (ballCurrentPosition[0]>=(gridWidth-ballDiameter) || ballCurrentPosition[1]>=(gridHeight-ballDiameter)){
-            changeBallDirection()
 
+
+    //check for block collisions
+
+    for (let i=0; i< blocks.length; i++){
+
+        if (
+            (ballCurrentPosition[0] > blocks[i].bottomLeft[0]) &&
+            (ballCurrentPosition[0] < blocks[i].bottomRight[0]) &&
+            ( (ballCurrentPosition[1] + ballDiameter) > blocks[i].bottomLeft[1])&&
+            (ballCurrentPosition[1] < blocks[i].topLeft[1])
+        ){
+            //we know our ball has hit a block
+            const allBlocks = Array.from(document.querySelectorAll('.block'))
+
+            allBlocks[i].classList.remove('block')
+            blocks.splice(i,1)
+            changeBallDirection()
+            score++
+            scoreDisplay.innerHTML= score
+
+            //check if user has won
+
+            if(blocks.length===0){
+                scoreDisplay.innerHTML = "YOU WIN"
+                clearInterval(timerId)
+                document.removeEventListener('keydown',moveUser)
+            }
+
+
+        }
+    }
+
+
+
+    //check for wall collision
+    if (ballCurrentPosition[0]>=(gridWidth-ballDiameter) || ballCurrentPosition[1]>=(gridHeight-ballDiameter) || (ballCurrentPosition[0]<=0)){
+            changeBallDirection()
+    }
+
+    //check if ball hits the paddle
+
+    if(
+        (ballCurrentPosition[0] > userCurrentPosition[0]) &&
+        (ballCurrentPosition[0] < (userCurrentPosition[0] + blockWidth))&&
+        (ballCurrentPosition[1] > userCurrentPosition[1]) &&
+        (ballCurrentPosition[1] < (userCurrentPosition[1] + blockHeight))
+        ){
+            changeBallDirection()
+        }
+
+
+    //check if ball hit the floor for game over
+    if(ballCurrentPosition[1]<=0){
+        clearInterval(timerId)
+        scoreDisplay.innerHTML = 'YOU LOSE'
+        document.removeEventListener('keydown',moveUser)
     }
 
 }
@@ -162,14 +217,26 @@ function changeBallDirection(){
 
     //right wall
     if(xDirection===2 && yDirection===2){
+        yDirection =-2
+        return
+    }
+
+    if(xDirection===2 && yDirection===-2){
         xDirection =-2
         return
     }
 
 
+    if(xDirection===-2 && yDirection===-2){
+        yDirection =2
+        return
+    }
+
+
+
     if(xDirection===-2 && yDirection===2){
 
-        yDirection=-2
+        xDirection=2
 
         return
     }
